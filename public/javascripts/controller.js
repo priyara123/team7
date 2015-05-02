@@ -15,7 +15,7 @@
 			$scope.sprintIdList = response;	
 		});
 
-		$scope.markCompletedSuccessMessage = "";
+		//$scope.markCompletedSuccessMessage = "";
 
 		//calc actualPts
 		$http.get('/actualPoints').success(function(response) {
@@ -150,6 +150,7 @@
 			$http.put('/' + sprintId).success(function(response) {
 				$scope.markCompletedSuccessMessage = " Success! Selected sprint is marked as complete!";
 				sprintStories(sprintId);
+				refresh();
 			});
 	};
 

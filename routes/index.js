@@ -43,11 +43,11 @@ router.get('/sprint', function(req, res) {
 router.get('/previousCardAdd', function(req, res) {
 	db.task.find({tenantid : parseInt(tenantid) },function(err, docs){
 		if(err){
-			console.log("error");
+			//console.log("error");
 			throw err;
 		}
 		else{
-			console.log(res.body);
+			//console.log(res.body);
 			res.send({'doc':docs,'tenantid' : tenantid});
 		}
 	});
@@ -57,12 +57,12 @@ router.get('/previousCardAdd', function(req, res) {
 router.get('/fetchCardNo', function(req, res) {
 	db.task.count({tenantid : parseInt(tenantid) },function(err, count){
 		if(err){
-			console.log("error");
+			//console.log("error");
 			throw err;
 		}
 		else{
-			console.log(count);
-			console.log("There are " + count + " records.");
+			//console.log(count);
+			//console.log("There are " + count + " records.");
 			res.json(count);
 		}
 	});
@@ -71,11 +71,11 @@ router.get('/fetchCardNo', function(req, res) {
 router.post('/cardDetails', function(req, res) {
 	db.task.insert(req.body , function (err, doc) {
 		if(err){
-			console.log("error");
+			//console.log("error");
 			throw err;
 		}
 		else{
-			console.log(doc);		
+			//console.log(doc);		
 			res.json({"docs":doc});
 		}
 	});
@@ -83,7 +83,7 @@ router.post('/cardDetails', function(req, res) {
 router.get('/getResourceList', function(req, res) {
 	db.resource.find({tenantid : parseInt(tenantid) },function(err, docs){
 		if(err){
-			console.log("error");
+			//console.log("error");
 			throw err;
 		}
 		else{
@@ -95,11 +95,11 @@ router.get('/getResourceList', function(req, res) {
 router.get('/getTaskList', function(req, res) {
 	db.task.find({tenantid : parseInt(tenantid) },function(err, docs){
 		if(err){
-			console.log("error");
+			//console.log("error");
 			throw err;
 		}
 		else{
-			console.log(docs);
+			//console.log(docs);
 			res.send({'doc':docs,'tenantid' : tenantid});
 		}
 	});
@@ -112,7 +112,7 @@ router.get('/getSumOfPlanned', function(req, res) {
                      { $sort: { total: -1 } }
                    ],function(err, docs){
 		if(err){
-			console.log("error");
+			//console.log("error");
 			throw err;
 		}
 		else{
@@ -171,7 +171,7 @@ router.get('/logout', function(req, res){
 	console.log(req.session.username);
 	  req.session.destroy(function(err){
 		  if(err){
-			  console.log(err);
+			  //console.log(err);
 			  throw err;
 		  }
 		  else{
@@ -186,7 +186,7 @@ router.get('/getTechnology', function(req, res) {
 	//console.log(sqlGetTechnology);
 	mysql.handle_database(function(err,results){
 		if(err){
-			console.log("error");
+			//console.log("error");
 			throw err;
 		}
 		else 
@@ -339,7 +339,7 @@ router.post('/updatetask/:id', function(req, res) {
 router.post('/aftersignup', function(req, res) {
 
 	var sqlFindUser = "select username from TENANT where username='"+req.body.username+"'";
-	console.log("Query is:"+sqlFindUser);
+	//console.log("Query is:"+sqlFindUser);
 	
 	mysql.handle_database(function(err,results){
 		if(err){
@@ -349,18 +349,18 @@ router.post('/aftersignup', function(req, res) {
 		else 
 		{
 			if(results.length > 0){
-				console.log("User alreasy exists");
+				//console.log("User alreasy exists");
 				res.send({"signup":"Fail"});
 			}
 			else{    
-				console.log("New user");
+				//console.log("New user");
 				bcrypt.genSalt(10, function(err, salt) {
 				    bcrypt.hash(req.body.password, salt, function(err, hash) {
 				    	var sqlNewUser = "insert into TENANT (firstName,lastName,username,password,type) values ('"+req.body.firstname+"','"+req.body.lastname+"','"+req.body.username+"','"+hash+"','"+req.body.type+"')";
-							console.log("Query is:"+sqlNewUser);
+							//console.log("Query is:"+sqlNewUser);
 							
 							mysql.handle_database(function(err,results){
-							console.log("inside");
+							//console.log("inside");
 							if(err){
 								console.log("error");
 								throw err;
@@ -368,8 +368,8 @@ router.post('/aftersignup', function(req, res) {
 								ses=req.session;
 				    		ses.username=req.body.username;
 				    		tenantid = results.insertId;
-				    		console.log('signup tenant'+ tenantid);
-				    		console.log(ses.username + "is session username");
+				    		//console.log('signup tenant'+ tenantid);
+				    		//console.log(ses.username + "is session username");
 				    		if(req.body.type == 1){
 				    			res.send({"signup":"Waterfall"});
 				    		}
@@ -382,7 +382,7 @@ router.post('/aftersignup', function(req, res) {
 							},sqlNewUser);
 				    });
 					});
-				console.log("User added");
+				//console.log("User added");
 				}
 		}
 	},sqlFindUser);
@@ -390,18 +390,18 @@ router.post('/aftersignup', function(req, res) {
 
 router.post('/afterlogin', function(req, res) {
 	var sqlFindUser = "select username,tenantId from TENANT where username='"+req.body.username+"'";
-	console.log("Query is:"+sqlFindUser);
+	//console.log("Query is:"+sqlFindUser);
 	mysql.handle_database(function(err,results){
 		if(err){
 			console.log("error");
 			throw err;
 		}
 		else{
-			console.log(results);
+			//console.log(results);
 			if(results.length > 0){
 				tenantid = results[0].tenantId;
 				var sqlGetPassword = "select password from TENANT where username='"+req.body.username+"'";
-				console.log("Query is:"+sqlGetPassword);
+				//console.log("Query is:"+sqlGetPassword);
 				
 				mysql.handle_database(function(err,results){
 					if(err){
@@ -409,13 +409,13 @@ router.post('/afterlogin', function(req, res) {
 						throw err;
 					}
 					else{
-						console.log("results"+results);
+						//console.log("results"+results);
 						 bcrypt.compare(req.body.password, results[0].password, function(err, response) {
-						    	console.log("output is " +response);
+						    	//console.log("output is " +response);
 						    	if(response){
 						    		ses=req.session;
 						    		ses.username=req.body.username;
-						    		console.log(ses.username + "is session username");
+						    		//console.log(ses.username + "is session username");
 						    		if(req.body.type == 1){
 						    			res.send({"login":"Waterfall"});
 						    		}
@@ -427,7 +427,7 @@ router.post('/afterlogin', function(req, res) {
 						    		}
 						    	}
 						    	else{
-						    		console.log("InValid user");
+						    	//	console.log("InValid user");
 										res.send({"login":"Fail"});
 						    	}
 						    });
@@ -435,7 +435,7 @@ router.post('/afterlogin', function(req, res) {
 				},sqlGetPassword);		
 			}
 			else {  
-				console.log("InValid user");
+			//	console.log("InValid user");
 				res.send({"login":"Fail"});
 			}
 		}
@@ -444,8 +444,6 @@ router.post('/afterlogin', function(req, res) {
 
 //get all user stories
 router.get('/userStoryList', function (req, res) {
-	//below log prints to windows cmd prompt console
-	//console.log("I received a GET request");
 	db.task.find({tenantId : parseInt(tenantid) }, function(err, docs){
     res.json(docs);
 	});	
@@ -543,38 +541,38 @@ router.get('/actualPoints', function(req,res) {
 	var pts = {"foo": 1};
 	db.task.aggregate(
    [
-        {$match : {tenantId: parseInt(tenantid)}},
+        {$match :{ $and: [{tenantId: parseInt(tenantid)}, {userStoryStatus: 2}]}},
         {$group : {
            _id : null,
            total: { $sum:  "$points"  }
         }}
    ], function(err, doc) {
    		errStep1 = err;
-      console.log("err:" + err + "errStep1: " + errStep1);
+      //console.log("err:" + err + "errStep1: " + errStep1);
    		if(!err) {
-   			// console.log("step1 doc format");
-   			// console.log(doc);
-   			// console.log("Pts in Step 1-1: before:");
-   			// console.log(pts);
+   			console.log("step1 doc format");
+   			console.log(doc);
+   			console.log("Pts in Step 1-1: before:");
+   			console.log(pts);
    			pts = doc;
-   			// console.log("Pts in Step 1-2: before:");
-   			// console.log(pts);
+   			console.log("Pts in Step 1-2: before:");
+   			console.log(pts);
    			//this if-else block handles doc[0] undefined error
    			if(doc[0]) {
    				pts[0].actualPoints = doc[0].total;
-   				// console.log("Pts in Step1: after:");
-   				// console.log(pts);
+   				console.log("Pts in Step1: after:");
+   				console.log(pts);
    			}
    			//else executes when there is no doc[0]--> meaning, there are no records in task collection.
    			else { 
    				pts.actualPoints = 0; 
-   				// console.log("Pts in Step1: after:");
-   				// console.log(pts);
+   				console.log("Pts in Step1: after:");
+   				console.log(pts);
    			}
 	   	}
 	   	else {
 	   		res.status(404).send('Failed to fetch actual points, error: ' + err);
-	   		//console.log("response sent from step 1");
+	   		console.log("response sent from step 1");
 	   	}
    });
 	if(!errStep1) {
@@ -587,10 +585,10 @@ router.get('/actualPoints', function(req,res) {
       		}}
    		], function(err, doc) {
    			if(!err) {
-   				// console.log("step2 doc format");
-   				// console.log(doc);
-   				// console.log("Pts in Step2: before:");
-   				// console.log(pts);
+   				console.log("step2 doc format");
+   				console.log(doc);
+   				console.log("Pts in Step2: before:");
+   				console.log(pts);
    				//this if condition handles pts[0] undefined error. This error occurs because of the async nature of nodejs. To repro the error, remove if condition.
    				if(!pts[0]) { 
    					pts = doc;
@@ -598,23 +596,23 @@ router.get('/actualPoints', function(req,res) {
    				//this if-else block handles doc[0] undefined error
    				if(doc[0]) {
    					pts[0].expectedPoints = doc[0].total;
-   					// console.log("Step 2: after:");
-   					// console.log(pts);
+   					console.log("Step 2: after:");
+   					console.log(pts);
    					res.json(pts);
-   					// console.log("response sent from step # 2-1 ");
+   					console.log("response sent from step # 2-1 ");
    				}
    				//else executes when there is no doc[0]--> meaning, there are no records in Sprints collection.
    				else { 
    					pts.expectedPoints = 0; 
-   					// console.log("Step 2: after:");
-   					// console.log(pts);
+   					console.log("Step 2: after:");
+   					console.log(pts);
    					res.json(pts); 
-   					// console.log("response sent from step # 2-2.");
+   					console.log("response sent from step # 2-2.");
    				}
    			}
    			else {
    				res.status(404).send('Failed to fetch expected points, error: ' + err);
-   				// console.log("response sent from step # 2-3 ");
+   				console.log("response sent from step # 2-3 ");
    			}
    		});
 	}
