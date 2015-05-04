@@ -117,10 +117,8 @@
           		</form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-ng-click = "" data-dismiss="modal"><span class="glyphicon glyphicon-remove-sign"></span>
-              </button>
-              <button type="button" class="btn btn-primary" data-ng-click = "addStory()" data-dismiss="modal"><span class="glyphicon glyphicon-ok-circle"></span>
-              </button>
+              <button type="button" class="btn btn-danger" data-ng-click = "" data-dismiss="modal"><span class="glyphicon glyphicon-remove-sign"></span></button>
+              <button type="button" class="btn btn-primary" data-ng-click = "addStory()" data-dismiss="modal"><span class="glyphicon glyphicon-ok-circle"></span></button>
             </div>
           </div>
         </div>
@@ -151,12 +149,13 @@
               		</div>
               		<div>
                     <label>Points</label>
-              		  <input ng-model = "userStory.points" type="number" required>
-              		  </br>
+              		  <input ng-model = "userStory.points">
+              		  <div>
               		  <label>Sprint:&nbsp;<span style="color:red;font-size:11px;"/> (completed sprints are disabled for selection)</label>
               		  <select data-ng-model = "userStory.sprintId" data-placement = "top" class="selectpicker" data-style="btn-success" required>
               		    <option data-ng-repeat = "sprint in sprintIdList" ng-disabled = "(sprint.sprintStatus == 2)">{{sprint.sprintId}}</option>
               		  </select>
+                </div>
                 </div>
           		</form>
             </div>

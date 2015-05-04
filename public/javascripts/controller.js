@@ -57,11 +57,14 @@
 	refresh();
 	
 	var list = new Object();
-	/*TEST CODE*/
 	var populateColumns =  function() {
+		console.log("popuate columns..");
 	    $http.get('/scrumColumnList').success(function(response) {
-	       list = response[0].columnList.split(',');
-	       $scope.columnList = list;
+	       if(response[0]) {
+	       		list = response[0].columnList.split(',');
+	       		$scope.columnList = list;
+	       		console.log($scope.columnList);
+	       }
 	    });
 	};
 	
@@ -86,7 +89,7 @@
 				else 
 					$scope.showWarning = 1;
 			});
-	}
+	};
 
 	 //get user stories for a sprintId
 	$scope.getSprintStories = function (sprintId) { 
@@ -98,7 +101,8 @@
 	};
 
 	//add story
-	$scope.addStory = function createJSON() {
+	$scope.addStory = function recreateStoryObject() {
+		console.log("entered add story");
 		var i =0;
 		var newStory = new Object();
 		
@@ -114,6 +118,8 @@
     	newStory.points = parseInt($("#storyForm *").filter("input[id='points']").val());
     
     	$http.post('/userStoryList', newStory).success(function(response) {
+			console.log(response);
+			console.log(newStory);
 			refresh();
 		});
 		//reset the values to null after posting story
@@ -166,11 +172,11 @@
 			});
 	};
 
-	var actualPts = function() {
-		$http.get('/actualPoints').success(function(response) {
-			$scope.actualPoints = response;		
-		});
-	};
+	// var actualPts = function() {
+	// 	$http.get('/actualPoints').success(function(response) {
+	// 		$scope.actualPoints = response;		
+	// 	});
+	// };
 
 });
 

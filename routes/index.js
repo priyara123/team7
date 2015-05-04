@@ -44,11 +44,9 @@ router.get('/sprint', function(req, res) {
 router.get('/previousCardAdd', function(req, res) {
 	db.task.find({tenantid : parseInt(tenantid) },function(err, docs){
 		if(err){
-			//console.log("error");
 			throw err;
 		}
 		else{
-			//console.log(res.body);
 			res.send({'doc':docs,'tenantid' : tenantid});
 		}
 	});
@@ -448,18 +446,15 @@ router.post('/afterlogin', function(req, res) {
 });
 
 router.get('/scrumColumnList', function(req, res) {
+	console.log("*******************************ENTERED SCRUM COL LIST***********************************");
+	console.log("tenantid " + tenantid);
   	var sqlGetTechnology = "select * from TECHNOLOGY where technologyId = 2 and tenantId = " + "'"+ tenantid + "'"; 
 	mysql.handle_database(function(err,results) {
 		if(err){
-			console.log("error");
-			throw err;
+			res.status(404).send('Failed to fetch scrum col list, error: ' + err);
 		}
 		else 
-		{
-			if(results.length > 0){
-					res.send(results);
-				}
-		}
+			res.send(results);
 	},sqlGetTechnology);
 });
 
@@ -503,11 +498,15 @@ router.get('/sprintStoryList/:sprintId', function (req, res) {
 
 //add story
 router.post('/userStoryList', function (req, res) {	
+	console.log("entered add story*****************************");
+	console.log(req.body);
 	req.body.userStoryStatus = 0;
 	req.body.technology = "Scrum";
   	req.body.tenantId = parseInt(tenantid);
 	db.task.insert(req.body, function(err, doc) {
 		res.json(doc);
+		console.log("my add stry repsonse************")
+		console.log(doc);
 	});
 });
 
