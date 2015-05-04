@@ -1,6 +1,5 @@
 	var myApp = angular.module('scrumApp',[]);
 	myApp.controller('ScrumAppCtrl', function($scope, $http) {
-	//	console.log("Hello from controller.js");
 	
 
 	var refresh = function() {
@@ -15,11 +14,8 @@
 			$scope.sprintIdList = response;	
 		});
 
-		//$scope.markCompletedSuccessMessage = "";
-
 		//calc actualPts
 		$http.get('/actualPoints').success(function(response) {
-			//console.log(response);
 			if(response[0]) {
 				//handles the case where there are stories created.
 				if (response[0].actualPoints)
@@ -70,7 +66,6 @@
 	};
 	
 	populateColumns();
-	/*TEST CODE*/
 
 	//hideSprintTable()
 	$scope.hideSprintTable = function(){
@@ -84,7 +79,6 @@
 	var sprintStories = function(sprintId) {
 		$http.get('/sprintStoryList/' + sprintId).success(function(response) {
 				$scope.sprintStoryList = response;
-				console.log(response);
 				if(response[0])
 				{
 					$scope.showMarkBtn = "1";
@@ -147,14 +141,8 @@
 	//update story
 	$scope.updateStory = function() {
 		var id = $scope.userStory._id;
-		// console.log("before update");
-		// console.log($scope.userStory);
-		console.log("list value....");
-		console.log(list);
 		$http.put('/userStoryList/' + id, $scope.userStory).success(function(response) {
 			$scope.userStory = response;
-			console.log("after update");
-			console.log($scope.userStory);
 			refresh();
 		});
 	};
@@ -173,6 +161,7 @@
 			$http.put('/' + sprintId).success(function(response) {
 				$scope.markCompletedSuccessMessage = " Success! Selected sprint is marked as complete!";
 				sprintStories(sprintId);
+				//refresh to update the project status.
 				refresh();
 			});
 	};
