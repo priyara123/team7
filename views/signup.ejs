@@ -28,7 +28,7 @@
 									<div style="padding-top:30px;">
 										<div  class="select_style">
 											<select ng-model="logintech.selected" required data-fv-notempty-message="Please select an item in the list">
-												<option ng-repeat="tech in techs" value="{{ tech.technologyId }}">{{ tech.technologyName }}</option>
+												<option ng-repeat="tech in techs">{{ tech.technologyName}}</option>
 												<option value="" selected>---Select Technology---</option>
 											</select>
 										</div>
@@ -59,12 +59,13 @@
 						<br>
 						<div  class="select_style">
 							<select ng-model="tech.selected" required data-fv-notempty-message="Please select an item in the list">
-								<option ng-repeat="tech in techs" value="{{ tech.technologyId }}">{{ tech.technologyName }}</option>
+								<option ng-repeat="tech in techs">{{ tech.technologyName }}</option>
 								<option value="" selected >---  Select Technology  ---</option>
 							</select>
 						</div>
 						<div class="button_type">
 							<button type="submit" class="btnnn btn-default" ng-disabled="signupForm.$invalid" ng-click="signUp()"><strong>Register Now</strong></button>
+							<!--<button type="submit" class="btnnn btn-default" ng-click="signUp()"><strong>Register Now</strong></button>-->
 						</div>
 					</form>
 				</div>
@@ -92,6 +93,8 @@
 			$http.get("/getTechnology")
 			.success(function(response){
 				$scope.techs = response.data;
+				console.log("list of techs...");
+				console.log(response.data);
 			}).error(function(error){
 				alert(error);
 			});
@@ -110,6 +113,10 @@
 							"type": $scope.tech.selected
 						}  
 				}).success(function(response){
+					console.log("data is ...");
+					//console.log(data);
+					console.log("response is...");
+					console.log(response);
 					//alert(JSON.stringify(response));
 					if(response.signup == "Waterfall"){
 					//alert('hi');

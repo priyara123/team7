@@ -61,30 +61,26 @@
 		<h4>This page lists all the user stories.</h4>
 		<h5 data-ng-show="userStoryList.length > 0"><span style="color:red;"/>Note: 'Edit/Delete' options are disabled for the stories that are completed.</h5>
 		<p data-placement="top" title="Add Story"><button data-target="#addStory" data-toggle="modal" class = "btn btn-info pull-right"><span class="glyphicon glyphicon-plus" ></span> Add Story</button></p>
-	<div data-ng-show="userStoryList.length > 0">
+	<!--TEST CODE-->
+	
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>User Story</th>
-					<th>Acceptance Criteria</th>
-					<th>Comments</th>
+					<th ng-repeat ="column in columnList">{{column}}</th>
 					<th>Points</th>
-					<th>Cost</th>
-					<th>Days</th>
 					<th>Sprint</th>
 					<th>Status</th>
-					<th>&nbsp;</th>
-					<th>&nbsp;</th>
+					<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete</th>
+					<th>&nbsp;&nbsp;Edit</th>
 				</tr>
 			</thead>	
+	
+	<!--<div data-ng-show="userStoryList.length > 0">-->
+		
 			<tbody>
 				<tr data-ng-repeat = "userStory in userStoryList">
-					<td>{{userStory.userStory}}</td>
-					<td>{{userStory.acceptanceCriteria}}</td>
-					<td>{{userStory.comments}}</td>
+					<td ng-repeat = "column in columnList">{{userStory[column]}}</td>
 					<td>{{userStory.points}}</td>
-					<td>${{userStory.points * 30}}</td>
-					<td>{{userStory.points/3 | number:2}}</td>
 					<td>{{userStory.sprintId}}</td>
 					<td><span>{{userStory.userStoryStatus == 2 ? 'Assigned & Completed' : ((userStory.sprintId) ? 'Assigned' : 'Created')}}</span></td>
 					<td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class = "btn btn-danger form-control" data-ng-click = "removeStory(userStory._id)" data-ng-disabled = "(userStory.userStoryStatus == 2)"><span class="glyphicon glyphicon-trash"></span> Delete</button></p></td>
@@ -93,10 +89,9 @@
 				</tr>
 			</tbody>
 		</table>
-	</div>
-		<div data-ng-show="userStoryList.length <= 0"><h4><span class = "glyphicon glyphicon-thumbs-down" style ="color:red;font-family:helvetica">&nbsp;Currently, there are no user stories to display, click on 'Add Story' button to create new stories.</span></h4></div>
-
-    <div class="modal fade" id="addStory" tabindex="-1" role="dialog" aria-labelledby="lstatus" aria-hidden="true">
+	<!--</div>-->
+	
+	<div class="modal fade" id="addStory" tabindex="-1" role="dialog" aria-labelledby="lstatus" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -106,32 +101,39 @@
               <h4 class="modal-title" id="lstatus">Enter the Story details below:</h4>
             </div>
             <div class="modal-body">
-            	<form name="storyForm">
-              		<label>User Story*: </label><div role="alert">
-                  		<span style="color:red" class="error" data-ng-show="storyForm.story.$error.required">
-                  		Required field*</span>
-                	</div><input class="form-control" name="story" data-ng-model = "story.userStory" required></br>
-              		<label>Acceptance Criteria:&nbsp; </label><input class="form-control" data-ng-model = "story.acceptanceCriteria"></br>
-              		<label>Comments: </label><input class="form-control" data-ng-model = "story.comments"></br>
-              		<label>Points*: </label><div role="alert">
-                  		<span style="color:red" class="error" data-ng-show="storyForm.points.$error.required">
-                  		Required field*</span>
-                	</div><input class="form-control" name = "points" type = "number" min = 1 data-ng-model = "story.points" required></br>
-              		<label>Sprint:&nbsp;<span style="color:red;font-size:11px"/> (completed sprints are disabled for selection)</label><select data-ng-model = "story.sprintId" data-placement = "top" class="selectpicker form-control" data-style="btn-success" required><option data-ng-repeat = "sprint in sprintIdList" ng-disabled = "(sprint.sprintStatus == '2')">{{sprint.sprintId}}</option></select></br>
-              		<label>Cost: ${{story.points * 30}}</label></br>
-              		<label>Days: {{story.points/3 | number:2}}</label>
+            	<form name="storyForm" id = "storyForm">
+              		<div data-ng-repeat = "column in columnList">
+              		  <label>Enter the value for:&nbsp;{{column}}</label>
+              		    <input class ="story">
+              		</div>
+              		<label>Points:&nbsp;</label>
+              		<input type="number" id = "points">
+              		<div>
+              		  <label>Sprint:&nbsp;<span style="color:red;font-size:11px;"/> (completed sprints are disabled for selection)</label>
+              		  <select data-ng-model = "userStory.sprintId" data-placement = "top" class="selectpicker" data-style="btn-success" required>
+              		    <option data-ng-repeat = "sprint in sprintIdList" ng-disabled = "(sprint.sprintStatus == 2)">{{sprint.sprintId}}</option>
+              		  </select>
+                </div>
           		</form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-ng-click = "" data-dismiss="modal"><span class="glyphicon glyphicon-remove-sign"></span>
               </button>
-              <button type="button" data-ng-disabled = "!storyForm.story.$valid || !storyForm.points.$valid" class="btn btn-primary" data-ng-click = "addStory()" data-dismiss="modal"><span class="glyphicon glyphicon-ok-circle"></span>
+              <button type="button" class="btn btn-primary" data-ng-click = "addStory()" data-dismiss="modal"><span class="glyphicon glyphicon-ok-circle"></span>
               </button>
             </div>
           </div>
         </div>
       </div>
+	
+	<!--TEST CODE-->
+	
+	
+	
+	
+		<div data-ng-show="userStoryList.length <= 0"><h4><span class = "glyphicon glyphicon-thumbs-down" style ="color:red;font-family:helvetica">&nbsp;Currently, there are no user stories to display, click on 'Add Story' button to create new stories.</span></h4></div>
 
+    
 	  <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="lstatus" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -142,27 +144,26 @@
               <h4 class="modal-title" id="lstatus">Edit the Story details below:</h4>
             </div>
             <div class="modal-body">
-              <form name = "editForm">
-                <label>User Story*: </label><div role="alert">
-                      <span style="color:red" class="error" data-ng-show="editForm.story.$error.required">
-                      Required field*</span>
-                  </div><input class="form-control" name = "story" data-ng-model = "userStory.userStory" required></br>
-                <label>Acceptance Criteria:&nbsp; </label><input class="form-control" data-ng-model = "userStory.acceptanceCriteria" required></br>
-                <label>Comments: </label><input class="form-control" data-ng-model = "userStory.comments" required></br>
-                <label>Points*: </label><div role="alert">
-                      <span style="color:red" class="error" data-ng-show="editForm.points.$error.required">
-                      Required field*</span>
-                  </div><input class="form-control" name = "points" type = "number" min = 1 data-ng-model = "userStory.points" required></br>
-                <label>Sprint:&nbsp;<span style="color:red;font-size:11px;"/> (completed sprints are disabled for selection)</label><select data-ng-model = "userStory.sprintId" data-placement = "top" class="selectpicker form-control" data-style="btn-success" required><option data-ng-repeat = "sprint in sprintIdList" ng-disabled = "(sprint.sprintStatus == 2)">{{sprint.sprintId}}</option></select></br>
-
-                <label>Cost: ${{userStory.points * 30}}</label></br>
-                <label>Days: {{userStory.points/3 | number:2}}</label></br>
-            </form>
+            	<form name="editForm" id = "editForm">
+              		<div data-ng-repeat = "column in columnList">
+              		  <label>{{column}}</label>
+              		    <input class ="story" ng-model = "userStory[column]">
+              		</div>
+              		<div>
+                    <label>Points</label>
+              		  <input ng-model = "userStory.points" type="number" required>
+              		  </br>
+              		  <label>Sprint:&nbsp;<span style="color:red;font-size:11px;"/> (completed sprints are disabled for selection)</label>
+              		  <select data-ng-model = "userStory.sprintId" data-placement = "top" class="selectpicker" data-style="btn-success" required>
+              		    <option data-ng-repeat = "sprint in sprintIdList" ng-disabled = "(sprint.sprintStatus == 2)">{{sprint.sprintId}}</option>
+              		  </select>
+                </div>
+          		</form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-ng-click = "" data-dismiss="modal"><span class="glyphicon glyphicon-remove-sign"></span>
               </button>
-              <button type="button" class="btn btn-primary" data-ng-disabled = "!editForm.story.$valid || !editForm.points.$valid" data-ng-click = "updateStory()" data-dismiss="modal"><span class="glyphicon glyphicon-ok-circle"></span>
+              <button type="button" class="btn btn-primary" data-ng-click = "updateStory()" data-dismiss="modal"><span class="glyphicon glyphicon-ok-circle"></span>
               </button>
             </div>
           </div>

@@ -34,6 +34,7 @@ router.get('/kanbanrsc', function(req, res) {
 });
 
 router.get('/story', function(req, res) {
+  //res.render('story');//edited
   res.render('story');
 });
 
@@ -182,7 +183,7 @@ router.get('/logout', function(req, res){
 });
 
 router.get('/getTechnology', function(req, res) {
-  var sqlGetTechnology = "select * from TECHNOLOGY"; 
+  var sqlGetTechnology = "select distinct technologyName from TECHNOLOGY"; 
 	//console.log(sqlGetTechnology);
 	mysql.handle_database(function(err,results){
 		if(err){
@@ -198,6 +199,7 @@ router.get('/getTechnology', function(req, res) {
 		}
 	},sqlGetTechnology);
 });
+
 
 router.post('/saversc', function(req, res) {
 	db.resource.insert(req.body , function (err, doc) {
@@ -339,9 +341,12 @@ router.post('/updatetask/:id', function(req, res) {
 router.post('/aftersignup', function(req, res) {
 
 	var sqlFindUser = "select username from TENANT where username='"+req.body.username+"'";
-	//console.log("Query is:"+sqlFindUser);
+	console.log("Request body after signn up");
+	console.log(req.body);
 	
 	mysql.handle_database(function(err,results){
+		console.log("response after sign up...");
+		console.log(results);
 		if(err){
 			console.log("error");
 			throw err;
@@ -370,13 +375,13 @@ router.post('/aftersignup', function(req, res) {
 				    		tenantid = results.insertId;
 				    		//console.log('signup tenant'+ tenantid);
 				    		//console.log(ses.username + "is session username");
-				    		if(req.body.type == 1){
+				    		if(req.body.type == 'Waterfall'){
 				    			res.send({"signup":"Waterfall"});
 				    		}
-				    		else if(req.body.type == 2){
+				    		else if(req.body.type == 'Scrum'){
 				    			res.send({"signup":"Scrum"});
 				    		}
-				    		else if(req.body.type == 3){
+				    		else if(req.body.type == 'Kanban'){
 				    			res.send({"signup":"Kanban"});
 				    		}
 							},sqlNewUser);
@@ -389,19 +394,18 @@ router.post('/aftersignup', function(req, res) {
 });
 
 router.post('/afterlogin', function(req, res) {
-	var sqlFindUser = "select username,tenantId from TENANT where username='"+req.body.username+"'";
-	//console.log("Query is:"+sqlFindUser);
+	var sqlFindUser = "select username,tenantId from TENANT where username='" + req.body.username + "'";
+	console.log("req body is ***********************:");
+	console.log(req.body);
 	mysql.handle_database(function(err,results){
 		if(err){
 			console.log("error");
 			throw err;
 		}
 		else{
-			//console.log(results);
 			if(results.length > 0){
 				tenantid = results[0].tenantId;
 				var sqlGetPassword = "select password from TENANT where username='"+req.body.username+"'";
-				//console.log("Query is:"+sqlGetPassword);
 				
 				mysql.handle_database(function(err,results){
 					if(err){
@@ -411,23 +415,24 @@ router.post('/afterlogin', function(req, res) {
 					else{
 						//console.log("results"+results);
 						 bcrypt.compare(req.body.password, results[0].password, function(err, response) {
-						    	//console.log("output is " +response);
+						    	console.log("request's pwd: "+req.body.password+"sql pwd is: "+results[0].password);
+						    	console.log("output of bcrypt compare is************************** " +response);
 						    	if(response){
 						    		ses=req.session;
 						    		ses.username=req.body.username;
 						    		//console.log(ses.username + "is session username");
-						    		if(req.body.type == 1){
+						    		if(req.body.type == 'Waterfall'){
 						    			res.send({"login":"Waterfall"});
 						    		}
-						    		else if(req.body.type == 2){
+						    		else if(req.body.type == 'Scrum'){
 						    			res.send({"login":"Scrum"});
 						    		}
-						    		else if(req.body.type == 3){
+						    		else if(req.body.type == 'Kanban'){
 						    			res.send({"login":"Kanban"});
 						    		}
 						    	}
 						    	else{
-						    	//	console.log("InValid user");
+						    			console.log("InValid user*********************************************");
 										res.send({"login":"Fail"});
 						    	}
 						    });
@@ -440,6 +445,22 @@ router.post('/afterlogin', function(req, res) {
 			}
 		}
 	},sqlFindUser);
+});
+
+router.get('/scrumColumnList', function(req, res) {
+  	var sqlGetTechnology = "select * from TECHNOLOGY where technologyId = 2 and tenantId = " + "'"+ tenantid + "'"; 
+	mysql.handle_database(function(err,results) {
+		if(err){
+			console.log("error");
+			throw err;
+		}
+		else 
+		{
+			if(results.length > 0){
+					res.send(results);
+				}
+		}
+	},sqlGetTechnology);
 });
 
 //get all user stories
@@ -463,7 +484,7 @@ router.post('/sprintIdList', function (req, res) {
 	req.body.sprintExpectedPoints = (req.body["days"]) * (req.body["teamSize"] * 3);
 	req.body.sprintStatus = 0; 
     req.body.tenantId = parseInt(tenantid);
-	//console.log("SprintId: " + req.body.sprintId + "; count: " + count + "; sprintStatus: " + req.body.sprintStatus + "; expectedPoints: " + req.body.sprintExpectedPoints);
+	//console.log("sprintId: " + req.body.sprintId + "; count: " + count + "; sprintStatus: " + req.body.sprintStatus + "; expectedPoints: " + req.body.sprintExpectedPoints);
 	count++;
 	if(req.body.teamSize > 0) {
 			//using standard velocity per person per day = 3
@@ -483,7 +504,8 @@ router.get('/sprintStoryList/:sprintId', function (req, res) {
 //add story
 router.post('/userStoryList', function (req, res) {	
 	req.body.userStoryStatus = 0;
-  req.body.tenantId = parseInt(tenantid);
+	req.body.technology = "Scrum";
+  	req.body.tenantId = parseInt(tenantid);
 	db.task.insert(req.body, function(err, doc) {
 		res.json(doc);
 	});
@@ -507,11 +529,34 @@ router.get('/userStoryList/:id', function(req,res) {
 
 //update user story
 router.put('/userStoryList/:id', function(req,res) {
+	var columnList = new Object();
 	var id = req.params.id;
+  	var sqlGetTechnology = "select * from TECHNOLOGY where technologyId = 2 and tenantId = " + "'"+ tenantid + "'"; 
+	mysql.handle_database(function(err,results) {
+		if(err){
+			throw err;
+		}
+		else 
+		{
+			if(results.length > 0){
+					columnList = results[0].columnList;
+				}
+		}
+	},sqlGetTechnology);
+	
+	var updatedObject = new Object();
+    for (var attrName in req.body) {
+    	if(attrName != '_id')
+    		updatedObject[attrName] = req.body[attrName];
+    }
+	
 	db.task.findAndModify({query: {_id: mongojs.ObjectId(id)}, 
-		update: {$set: { userStory: req.body.userStory, acceptanceCriteria: req.body.acceptanceCriteria, comments: req.body.comments, 
-		points: req.body.points, sprintId: req.body.sprintId}}},
+		update: {$set: updatedObject}},
 		function(err, doc) {
+			if(err) {
+				console.log("*******error in update story!!!********" + err);
+				throw err;
+			}
 			res.json(doc);
 		});
 });
@@ -541,54 +586,37 @@ router.get('/actualPoints', function(req,res) {
 	var pts = {"foo": 1};
 	db.task.aggregate(
    [
-        {$match :{ $and: [{tenantId: parseInt(tenantid)}, {userStoryStatus: 2}]}},
-        {$group : {
-           _id : null,
+        { $match: { $and: [{tenantId: parseInt(tenantid)}, {userStoryStatus: 2}]}},
+        { $group: {
+           _id: null,
            total: { $sum:  "$points"  }
         }}
    ], function(err, doc) {
    		errStep1 = err;
-      //console.log("err:" + err + "errStep1: " + errStep1);
    		if(!err) {
-   			console.log("step1 doc format");
-   			console.log(doc);
-   			console.log("Pts in Step 1-1: before:");
-   			console.log(pts);
    			pts = doc;
-   			console.log("Pts in Step 1-2: before:");
-   			console.log(pts);
-   			//this if-else block handles doc[0] undefined error
    			if(doc[0]) {
    				pts[0].actualPoints = doc[0].total;
-   				console.log("Pts in Step1: after:");
-   				console.log(pts);
    			}
    			//else executes when there is no doc[0]--> meaning, there are no records in task collection.
    			else { 
    				pts.actualPoints = 0; 
-   				console.log("Pts in Step1: after:");
-   				console.log(pts);
    			}
 	   	}
 	   	else {
 	   		res.status(404).send('Failed to fetch actual points, error: ' + err);
-	   		console.log("response sent from step 1");
 	   	}
    });
 	if(!errStep1) {
 		db.Sprints.aggregate(
    		[
-            {$match : {tenantId: parseInt(tenantid)}},
-        		{$group : {
-           			_id : null,
+            {$match: {tenantId: parseInt(tenantid)}},
+        		{$group: {
+           			_id: null,
            			total: { $sum:  "$sprintExpectedPoints"  }
       		}}
    		], function(err, doc) {
    			if(!err) {
-   				console.log("step2 doc format");
-   				console.log(doc);
-   				console.log("Pts in Step2: before:");
-   				console.log(pts);
    				//this if condition handles pts[0] undefined error. This error occurs because of the async nature of nodejs. To repro the error, remove if condition.
    				if(!pts[0]) { 
    					pts = doc;
@@ -596,23 +624,16 @@ router.get('/actualPoints', function(req,res) {
    				//this if-else block handles doc[0] undefined error
    				if(doc[0]) {
    					pts[0].expectedPoints = doc[0].total;
-   					console.log("Step 2: after:");
-   					console.log(pts);
    					res.json(pts);
-   					console.log("response sent from step # 2-1 ");
    				}
    				//else executes when there is no doc[0]--> meaning, there are no records in Sprints collection.
    				else { 
    					pts.expectedPoints = 0; 
-   					console.log("Step 2: after:");
-   					console.log(pts);
    					res.json(pts); 
-   					console.log("response sent from step # 2-2.");
    				}
    			}
    			else {
    				res.status(404).send('Failed to fetch expected points, error: ' + err);
-   				console.log("response sent from step # 2-3 ");
    			}
    		});
 	}

@@ -53,12 +53,24 @@
 			else {
 				$scope.expectedPoints = 0;
 				$scope.actualPoints = 0;
-				$scope.completionDate = "Cannot compute completion date. Looks like there are no  stories and sprints created!"
+				$scope.completionDate = "Cannot compute completion date. Looks like there are no  stories and sprints created!";
 			}
 		}); 
 	};
 
 	refresh();
+	
+	var list = new Object();
+	/*TEST CODE*/
+	var populateColumns =  function() {
+	    $http.get('/scrumColumnList').success(function(response) {
+	       list = response[0].columnList.split(',');
+	       $scope.columnList = list;
+	    });
+	};
+	
+	populateColumns();
+	/*TEST CODE*/
 
 	//hideSprintTable()
 	$scope.hideSprintTable = function(){
@@ -87,34 +99,39 @@
 		$scope.markCompletedSuccessMessage = "";
 		if(sprintId) {
 			$scope.showTable = 1;
-			// $http.get('/sprintStoryList/' + sprintId).success(function(response) {
-			// 	$scope.sprintStoryList = response;
-			// 	console.log(response);
-			// 	if(response[0])
-			// 	{
-			// 		$scope.showMarkBtn = "1";
-			// 	}
-			// 	else 
-			// 		$scope.showWarning = 1;
-			// });
 			sprintStories(sprintId);
 		} 
 	};
 
 	//add story
-	$scope.addStory = function() {
-		$http.post('/userStoryList', $scope.story).success(function(response) {
+	$scope.addStory = function createJSON() {
+		var i =0;
+		var newStory = new Object();
+		
+    	$("#storyForm *").filter("input[class ='story']").each(function() {
+        	var columnName = list[i];
+        	var columnValue = $(this).val();
+        	newStory[columnName] = columnValue;
+        	i++;
+    	});
+    
+    	//append sprintId to the item
+    	newStory.sprintId = $("#storyForm *").filter("select[class='sprintPicker']").val();
+    	newStory.points = parseInt($("#storyForm *").filter("input[id='points']").val());
+    
+    	$http.post('/userStoryList', newStory).success(function(response) {
 			refresh();
-			console.log("I got response");
-			console.log(response);
-		    $scope.story = "";
 		});
+		//reset the values to null after posting story
+		$("#storyForm *").filter(":input").each(function() {
+        	$(this).val('');
+		});
+		$("#storyForm *").filter("select[class='sprintPicker']").val('');
 	};
 
 	//add sprint
 	$scope.addSprint = function() {
 		$http.post('/sprintIdList', $scope.sprint).success(function(response) {
-			//sprintListRefresh();
 			refresh();
 			$scope.sprint = "";
 		});
@@ -130,8 +147,14 @@
 	//update story
 	$scope.updateStory = function() {
 		var id = $scope.userStory._id;
+		// console.log("before update");
+		// console.log($scope.userStory);
+		console.log("list value....");
+		console.log(list);
 		$http.put('/userStoryList/' + id, $scope.userStory).success(function(response) {
 			$scope.userStory = response;
+			console.log("after update");
+			console.log($scope.userStory);
 			refresh();
 		});
 	};

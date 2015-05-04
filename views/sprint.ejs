@@ -105,26 +105,18 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>User Story</th>
-					<th>Acceptance Criteria</th>
-					<th>Comments</th>
+					<th ng-repeat ="column in columnList">{{column}}</th>
 					<th>Points</th>
-					<th>Cost</th>
-					<th>Days</th>
-					<th>Sprint</th>					
+					<th>Sprint</th>
 					<th>Status</th>
 				</tr>
 			</thead>	
 			<tbody>			
-				<tr ng-repeat = "userStory in sprintStoryList">
-          <td>{{userStory.userStory}}</td>
-          <td>{{userStory.acceptanceCriteria}}</td>
-          <td>{{userStory.comments}}</td>
-          <td>{{userStory.points}}</td>
-          <td>${{userStory.points * 30}}</td>
-          <td>{{userStory.points/3 | number:2}}</td>
-          <td>{{userStory.sprintId}}</td>
-          <td><span>{{userStory.userStoryStatus == 2 ? 'Assigned & Completed' : ((userStory.sprintId) ? 'Assigned' : 'Created')}}</span></td>
+				<tr data-ng-repeat = "userStory in userStoryList">
+					<td ng-repeat = "column in columnList">{{userStory[column]}}</td>
+					<td>{{userStory.points}}</td>
+					<td>{{userStory.sprintId}}</td>
+					<td><span>{{userStory.userStoryStatus == 2 ? 'Assigned & Completed' : ((userStory.sprintId) ? 'Assigned' : 'Created')}}</span></td>
 				</tr>
 			</tbody>
 		</table>
