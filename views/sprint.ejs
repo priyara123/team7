@@ -37,7 +37,7 @@
               </div>
               <div class="modal-body">
                 <label>Expected Points:&nbsp;&nbsp; {{expectedPoints}}</label></br>
-                <label>Actual Points:&nbsp;&nbsp; {{actualPoints}}</label></br>
+                <label>Completed Points:&nbsp;&nbsp; {{actualPoints}}</label></br>
                 <label>Projected Completion Date&nbsp;(dd/mm/yyyy):&nbsp;</label><h5 style="color:blue">{{completionDate}}</h5>
               </div>
               <div class="modal-footer">
@@ -105,6 +105,7 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
+				  <td>Story Name</td>
 					<th ng-repeat ="column in columnList">{{column}}</th>
 					<th>Points</th>
 					<th>Sprint</th>
@@ -112,11 +113,12 @@
 				</tr>
 			</thead>	
 			<tbody>			
-				<tr data-ng-repeat = "userStory in userStoryList">
-					<td ng-repeat = "column in columnList">{{userStory[column]}}</td>
-					<td>{{userStory.points}}</td>
-					<td>{{userStory.sprintId}}</td>
-					<td><span>{{userStory.userStoryStatus == 2 ? 'Assigned & Completed' : ((userStory.sprintId) ? 'Assigned' : 'Created')}}</span></td>
+				<tr data-ng-repeat = "sprintStory in sprintStoryList">
+				  <td>{{sprintStory.name}}</td>
+					<td ng-repeat = "column in columnList">{{sprintStory[column]}}</td>
+					<td>{{sprintStory.points}}</td>
+					<td>{{sprintStory.sprintId}}</td>
+					<td><span>{{sprintStory.userStoryStatus == 2 ? 'Assigned & Completed' : ((sprintStory.sprintId) ? 'Assigned' : 'Created')}}</span></td>
 				</tr>
 			</tbody>
 		</table>

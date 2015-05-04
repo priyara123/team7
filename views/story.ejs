@@ -40,7 +40,7 @@
               </div>
               <div class="modal-body">
                 <label>Expected Points:&nbsp;&nbsp; {{expectedPoints}}</label></br>
-                <label>Actual Points:&nbsp;&nbsp; {{actualPoints}}</label></br>
+                <label>Completed Points:&nbsp;&nbsp; {{actualPoints}}</label></br>
                 <label>Projected Completion Date&nbsp;(dd/mm/yyyy):&nbsp;</label><h5 style="color:blue">{{completionDate}}</h5>
               </div>
               <div class="modal-footer">
@@ -66,6 +66,7 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
+				  <th>Story Name</th>
 					<th ng-repeat ="column in columnList">{{column}}</th>
 					<th>Points</th>
 					<th>Sprint</th>
@@ -79,6 +80,7 @@
 		
 			<tbody>
 				<tr data-ng-repeat = "userStory in userStoryList">
+					<td>{{userStory.name}}</td>
 					<td ng-repeat = "column in columnList">{{userStory[column]}}</td>
 					<td>{{userStory.points}}</td>
 					<td>{{userStory.sprintId}}</td>
@@ -106,8 +108,10 @@
               		  <label>Enter the value for:&nbsp;{{column}}</label>
               		    <input class ="story">
               		</div>
+              		<label>Story Name</label>
+              		<input id="storyName" required>
               		<label>Points:&nbsp;</label>
-              		<input type="number" id = "points">
+              		<input type="number" id = "points" min=1 required>
               		<div>
               		  <label>Sprint:&nbsp;<span style="color:red;font-size:11px;"/> (completed sprints are disabled for selection)</label>
               		  <select data-ng-model = "userStory.sprintId" data-placement = "top" class="selectpicker" data-style="btn-success" required>
@@ -143,13 +147,15 @@
             </div>
             <div class="modal-body">
             	<form name="editForm" id = "editForm">
+              		<label>Story Name</label>
+              		<input id="storyName" ng-model="userStory.name" required>
               		<div data-ng-repeat = "column in columnList">
               		  <label>{{column}}</label>
               		    <input class ="story" ng-model = "userStory[column]">
               		</div>
               		<div>
                     <label>Points</label>
-              		  <input ng-model = "userStory.points">
+              		  <input ng-model = "userStory.points" required type="number" min=1>
               		  <div>
               		  <label>Sprint:&nbsp;<span style="color:red;font-size:11px;"/> (completed sprints are disabled for selection)</label>
               		  <select data-ng-model = "userStory.sprintId" data-placement = "top" class="selectpicker" data-style="btn-success" required>

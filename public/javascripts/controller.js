@@ -82,6 +82,8 @@
 	var sprintStories = function(sprintId) {
 		$http.get('/sprintStoryList/' + sprintId).success(function(response) {
 				$scope.sprintStoryList = response;
+				console.log("sprintid:  " + sprintId + "  reponse is: ");
+				console.log(response);
 				if(response[0])
 				{
 					$scope.showMarkBtn = "1";
@@ -116,10 +118,9 @@
     	//append sprintId to the item
     	newStory.sprintId = $("#storyForm *").filter("select[class='sprintPicker']").val();
     	newStory.points = parseInt($("#storyForm *").filter("input[id='points']").val());
-    
+    	newStory.name = $("#storyForm *").filter("input[id='storyName']").val();
+    	
     	$http.post('/userStoryList', newStory).success(function(response) {
-			console.log(response);
-			console.log(newStory);
 			refresh();
 		});
 		//reset the values to null after posting story
