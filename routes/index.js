@@ -52,33 +52,166 @@ router.get('/previousCardAdd', function(req, res) {
 	});
 });
 
-
-router.get('/fetchCardNo', function(req, res) {
-	db.task.count({tenantid : parseInt(tenantid) },function(err, count){
+router.get('/KanbanColumnList', function(req, res) {
+	var tenantid=1234;
+	console.log("tenantid " + tenantid);
+  	var sqlGetTechnology = "select * from TECHNOLOGY where technologyName = 'Kanban' and tenantId = " + "'"+ tenantid + "'"; 
+  	console.log(sqlGetTechnology);
+	mysql.handle_database(function(err,results) {
 		if(err){
-			//console.log("error");
+			res.status(404).send('Failed to fetch kanban col list, error: ' + err);
+		}
+		else 
+			res.send(results);
+	},sqlGetTechnology);
+});
+
+router.get('/previousTODOAdd', function(req, res) {
+	tenantid=1234;
+	db.task.find({tenantid : parseInt(tenantid), cardLane : "TODO"},function(err, docs){
+		if(err){
+			console.log("error");
 			throw err;
 		}
 		else{
-			//console.log(count);
-			//console.log("There are " + count + " records.");
+			console.log(res.body);
+			res.send({'doc':docs,'tenantid' : tenantid});
+		}
+	});
+});
+
+
+router.get('/previousNEWAdd', function(req, res) {
+	tenantid=1234;
+	db.task.find({tenantid : parseInt(tenantid), cardLane: { $nin: [ "TODO", "DOING", "DONE"] }},function(err, docs){
+		if(err){
+			console.log("error");
+			throw err;
+		}
+		else{
+			console.log(res.body);
+			res.send({'doc':docs,'tenantid' : tenantid});
+		}
+	});
+});
+
+router.get('/previousDOINGAdd', function(req, res) {
+	tenantid=1234;
+	db.task.find({tenantid : parseInt(tenantid), cardLane : "DOING"},function(err, docs){
+		if(err){
+			console.log("error");
+			throw err;
+		}
+		else{
+			console.log(res.body);
+			res.send({'doc':docs,'tenantid' : tenantid});
+		}
+	});
+});
+
+router.get('/previousDONEAdd', function(req, res) {
+	tenantid=1234;
+	db.task.find({tenantid : parseInt(tenantid), cardLane : "DONE"},function(err, docs){
+		if(err){
+			console.log("error");
+			throw err;
+		}
+		else{
+			console.log(res.body);
+			res.send({'doc':docs,'tenantid' : tenantid});
+		}
+	});
+});
+
+router.get('/fetchTODOCardNo', function(req, res) {
+	var tenantid=1234;
+	db.task.count({tenantid : parseInt(tenantid), cardLane : "TODO"},function(err, count){
+		if(err){
+			console.log("error");
+			throw err;
+		}
+		else{
+			console.log(count);
+			console.log("There are " + count + " records.");
 			res.json(count);
 		}
 	});
 });
 
-router.post('/cardDetails', function(req, res) {
-	db.task.insert(req.body , function (err, doc) {
+router.get('/fetchDOINGCardNo', function(req, res) {
+	var tenantid=1234;
+	db.task.count({tenantid : parseInt(tenantid), cardLane : "DOING"},function(err, count){
 		if(err){
-			//console.log("error");
+			console.log("error");
 			throw err;
 		}
 		else{
-			//console.log(doc);		
+			console.log(count);
+			console.log("There are " + count + " records.");
+			res.json(count);
+		}
+	});
+});
+
+router.get('/fetchDONECardNo', function(req, res) {
+	var tenantid=1234;
+	db.task.count({tenantid : parseInt(tenantid), cardLane : "DONE"},function(err, count){
+		if(err){
+			console.log("error");
+			throw err;
+		}
+		else{
+			console.log(count);
+			console.log("There are " + count + " records.");
+			res.json(count);
+		}
+	});
+});
+
+router.get('/editKbCard/:id', function(req, res) {
+	console.log("in editKbCard function");
+	var id = req.params.id;
+	db.task.findOne({_id: mongojs.ObjectId(id)},function (err,doc) {
+		if(err){
+			console.log("error");
+			throw err;
+		}
+		else{
+			res.json(doc);
+		}
+	});	
+});
+
+router.post('/updatecard/:id', function(req, res) {
+	var id = req.params.id;
+	db.task.findAndModify({query: {_id: mongojs.ObjectId(id)},
+		update:{$set : {cardDescription : req.body.cardDescription, cardLane : req.body.lane.selected}},
+		new : true},function (err,doc) {
+		if(err){
+			console.log("error");
+			throw err;
+		}
+		else{
+			res.json(doc);
+		}
+	});
+});
+
+
+
+router.post('/cardDetails', function(req, res) {
+	db.task.insert(req.body , function (err, doc) {
+		if(err){
+			console.log("error");
+			throw err;
+		}
+		else{
+			console.log(doc);		
 			res.json({"docs":doc});
 		}
 	});
 });
+
 router.get('/getResourceList', function(req, res) {
 	db.resource.find({tenantid : parseInt(tenantid) },function(err, docs){
 		if(err){
@@ -446,9 +579,8 @@ router.post('/afterlogin', function(req, res) {
 });
 
 router.get('/scrumColumnList', function(req, res) {
-	console.log("*******************************ENTERED SCRUM COL LIST***********************************");
 	console.log("tenantid " + tenantid);
-  	var sqlGetTechnology = "select * from TECHNOLOGY where technologyId = 2 and tenantId = " + "'"+ tenantid + "'"; 
+  	var sqlGetTechnology = "select * from TECHNOLOGY where technologyName = 'Scrum' and tenantId = " + "'"+ tenantid + "'"; 
 	mysql.handle_database(function(err,results) {
 		if(err){
 			res.status(404).send('Failed to fetch scrum col list, error: ' + err);
@@ -528,20 +660,20 @@ router.get('/userStoryList/:id', function(req,res) {
 
 //update user story
 router.put('/userStoryList/:id', function(req,res) {
-	var columnList = new Object();
 	var id = req.params.id;
-  	var sqlGetTechnology = "select * from TECHNOLOGY where technologyId = 2 and tenantId = " + "'"+ tenantid + "'"; 
-	mysql.handle_database(function(err,results) {
-		if(err){
-			throw err;
-		}
-		else 
-		{
-			if(results.length > 0){
-					columnList = results[0].columnList;
-				}
-		}
-	},sqlGetTechnology);
+	// var columnList = new Object();
+ // 	var sqlGetTechnology = "select * from TECHNOLOGY where technologyId = 2 and tenantId = " + "'"+ tenantid + "'"; 
+	// mysql.handle_database(function(err,results) {
+	// 	if(err){
+	// 		throw err;
+	// 	}
+	// 	else 
+	// 	{
+	// 		if(results.length > 0){
+	// 				columnList = results[0].columnList;
+	// 			}
+	// 	}
+	// },sqlGetTechnology);
 	
 	var updatedObject = new Object();
     for (var attrName in req.body) {
@@ -553,7 +685,7 @@ router.put('/userStoryList/:id', function(req,res) {
 		update: {$set: updatedObject}},
 		function(err, doc) {
 			if(err) {
-				console.log("*******error in update story!!!********" + err);
+				console.log("error in update story: " + err);
 				throw err;
 			}
 			res.json(doc);
@@ -580,7 +712,7 @@ router.put('/:sprintId', function(req,res) {
 });
 
 //calculate the actual points of a sprint.
-router.get('/actualPoints', function(req,res) {
+router.get('/points', function(req,res) {
 	var errStep1 = null;
 	var pts = {"foo": 1};
 	db.task.aggregate(

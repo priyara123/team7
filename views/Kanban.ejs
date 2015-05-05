@@ -53,18 +53,70 @@
         </div>
       </div>
     </nav>
-    <div style="padding-left:350px;">
+    <div class="container">
+      <form name="frm_details"> 
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Card Description</th>
+            <th>Lane</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            <td>
+              <input type="text" class="form-control" name="cardDescription" ng-model="cardDB.cardDescription" id="cardDescription" placeholder="Card Description" required>
+            </td>
+            <td>
+              <div  class="select_style">
+                <!--angular Select-->
+                    <!--  <select ng-model="logintech.selected" required data-fv-notempty-message="Please select an item in the list">
+                        <option ng-repeat="tech in techs" value="{{ tech.technologyId }}">{{ tech.technologyName }}</option>
+                        <option value="" selected>---Select Lane---</option>
+                      </select>
+                    </div>-->
+
+                    <select ng-model="cardDB.lane.selected">
+                      <option value="TODO">TODO</option>
+                      <option value="DOING">DOING</option>
+                      <option value="DONE">DONE</option>
+                      <option  ng-repeat = "column in columnList" value="{{column}}">{{column}}</option>
+                    </select>
+            </td>
+            <td>
+              <button type="submit" class="btn btn-success" ng-click="postCard()"  ng-disabled="frm_details.$invalid">
+                <span class="glyphicon glyphicon-save"></span> Save
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-success" ng-click="cancel()">
+                <span class="glyphicon glyphicon-remove"></span> Cancel
+              </button>
+            </td>
+
+            <td>
+               <div ng-show = "updateshow">
+                <button class="btn btn-success" ng-click="update()">
+                  <span class="glyphicon glyphicon-upload"></span> Update
+                </button>
+              </div>
+            </td>
+  
     <div class="container-fluid">
         <div id="sortableKanbanBoards" class="row">
-            <!--sütun başlangıç-->
+            
             <div class="panel panel-primary kanban-col">
                 <div class="panel-heading">
                     TODO
                     <i class="fa fa-2x fa-plus-circle pull-right"></i>
                 </div>
+
                 <div class="panel-body">
                     <div id="TODO" class="kanban-centered">
-                         <div ng-repeat="card in cards">
+
+                      <div ng-repeat="card in cards">
                         <article class="kanban-entry grab" id="item11" draggable="true">
                             
                             <div class="kanban-entry-inner">
@@ -72,17 +124,106 @@
                                 <div class="kanban-label">
                                    {{card.cardDescription}}
                                 </div>
-                             </div>
+                                <button class="btn btn-primary" ng-click="editCard(card._id)">
+                                  <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+                                </button>
+                                
                             </div>
+
                         </article>
 
-                        </div>
-                </div>
-                <div class="panel-footer">
-                <li data-toggle="modal" data-target="#addCard"><a href="#" ><h5>Add Card</h5></a></li>
-                </div>
-            </div>
+                         </div>
+                         </div>
+                       </div>
+                         </div>
             
+                         <div class="panel panel-primary kanban-col"  >
+                <div class="panel-heading" ng-repeat = "column in columnList">
+                    {{column}}
+                    <i class="fa fa-2x fa-plus-circle pull-right"></i>
+                </div>
+
+                <div class="panel-body">
+                    <div id="TODO" class="kanban-centered">
+
+                      <div ng-repeat="card in cards3">
+                        <article class="kanban-entry grab" id="item11" draggable="true">
+                            
+                            <div class="kanban-entry-inner">
+                            
+                                <div class="kanban-label">
+                                   {{card.cardDescription}}
+                                </div>
+                                <button class="btn btn-primary" ng-click="editCard(card._id)">
+                                  <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+                                </button>
+                                
+                            </div>
+
+                        </article>
+
+                         </div>
+                         </div>
+                       </div>
+                         </div>
+            
+            
+                          <div class="panel panel-primary kanban-col">
+                    <div class="panel-heading">
+                    DOING
+                    <i class="fa fa-2x fa-plus-circle pull-right"></i>
+                </div>
+
+                <div class="panel-body">
+                    <div id="DOING" class="kanban-centered">
+                      <div ng-repeat="card in cards1">
+                        <article class="kanban-entry grab" id="item11" draggable="true">
+                            
+                            <div class="kanban-entry-inner">
+                            
+                                <div class="kanban-label">
+                                   {{card.cardDescription}}
+                                </div>
+                                <button class="btn btn-primary" ng-click="editCard(card._id)">
+                                  <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+                                </button>
+                                
+                            </div>
+
+                        </article>
+
+                         </div>
+                    </div>
+                </div>            </div>
+
+                
+                 <div class="panel panel-primary kanban-col">
+                    <div class="panel-heading">
+                    DONE
+                    <i class="fa fa-2x fa-plus-circle pull-right"></i>
+                </div>
+                <div class="panel-body">
+                    <div id="DONE" class="kanban-centered">
+                      <div ng-repeat="card in cards2">
+                        <article class="kanban-entry grab" id="item11" draggable="true">
+                            
+                            <div class="kanban-entry-inner">
+                            
+                                <div class="kanban-label">
+                                   {{card.cardDescription}}
+                                </div>
+                                <button class="btn btn-primary" ng-click="editCard(card._id)">
+                                  <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+                                </button>
+                                
+                            </div>
+
+                        </article>
+
+                         </div>
+                    </div>
+                </div>            </div>
+      
         <div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="lstatus" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -94,10 +235,22 @@
           </div>
           <div class="modal-body">
               <div>
-              <label>total no of cards present in boards are :-</label>
+              <label>cards present in TODO Column are :-</label>
               </div>
               <div>
             <label>{{cardNumber}}</label>
+            </div>
+             <div>
+              <label>cards present in DOING Column are :-</label>
+              </div>
+              <div>
+            <label>{{cardNumber1}}</label>
+            </div>
+             <div>
+              <label>cards present in DONE Column are :-</label>
+              </div>
+              <div>
+            <label>{{cardNumber2}}</label>
             </div>
           </div>
           <div class="modal-footer">
@@ -105,53 +258,6 @@
           </div>
         </div>
       </div>
-    </div>
-  
-            
-        <!-- card details popup -->    
-        <div class="modal fade" id="addCard" tabindex="-1" role="dialog" aria-labelledby="lstatus" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="lstatus">Card</h4>
-              </div>
-  			<div class="modal-body">
-              <label>Card Description</label>
-  			<textarea rows="3" class="form-control" name="cardDescription" ng-model="cardDescription" placeholder="Enter the card description"/></textarea>
-  						</div>
-              <div class="modal-footer">
-                <button type="button" ng-click="postCard()" class="btn btn-primary">Save</button>
-              <button type="button" class="btn btn-default" ng-click="cancel()" data-dismiss="modal">Cancel</button>
-              </div>
-            </div>
-          </div>
-        </div>
-            <div class="panel panel-primary kanban-col">
-                <div class="panel-heading">
-                    DOING
-                    <i class="fa fa-2x fa-plus-circle pull-right"></i>
-                </div>
-                <div class="panel-body">
-                    <div id="DOING" class="kanban-centered">
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel panel-primary kanban-col">
-                <div class="panel-heading">
-                    DONE
-                    <i class="fa fa-2x fa-plus-circle pull-right"></i>
-                </div>
-                <div class="panel-body">
-                    <div id="DONE" class="kanban-centered">
-                    </div>
-                </div>            </div>
-
-
-        </div>
     </div>
 
  <div class="modal fade" id="project" tabindex="-1" role="dialog" aria-labelledby="lprojectname" aria-hidden="true">
@@ -181,7 +287,7 @@
         </div>
       </div>
     </div>
-    <!-- Static Modal -->
+   
     <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -256,9 +362,27 @@
 <script>
     angular.module('rsc', []).controller('rscCtrl', function($scope,$http) {
         $scope.projectname = "Untitled";
-        var tenantid;
+        $scope.updateshow = false;
+        $scope.edit = true;
+        var tenantid=1234;
         var id=3;
         var cardNo;
+      
+        var list = new Object();
+          var populateColumns =  function() {
+      console.log("entered populate cols");
+      $http.get('/KanbanColumnList').success(function(response) {
+         if(response[0]) {
+	       		list = response[0].columnList.split(',');
+	       		$scope.columnList = list;
+	       		console.log($scope.columnList);
+	       }
+	    });
+	};
+  
+  
+  populateColumns();
+      
         $scope.saveProject = function() {
         if($scope.projectname == "Untitled"){
           alert('Project name cannot be untitled');
@@ -268,79 +392,171 @@
         }
       };
       
+      
+      
       var refresh = function(){
-        $http.get("/previousCardAdd")
+         $scope.edit = true;
+         $scope.updateshow = false;
+        $http.get("/previousTODOAdd")
         .success(function(response){
-            $scope.cards = response.doc;
-  			$scope.tenantid = response.tenantid;
-  			  			}).error(function(error){
-  				alert(error);
-  			});
+        $scope.cards = response.doc;
+        $scope.tenantid = response.tenantid;
+                }).error(function(error){
+          alert(error);
+        });
       };
       
+      var refresh1 = function(){
+                 $scope.edit = true;
+         $scope.updateshow = false;
+        $http.get("/previousDOINGAdd")
+        .success(function(response){
+        $scope.cards1 = response.doc;
+        $scope.tenantid = response.tenantid;
+                }).error(function(error){
+          alert(error);
+        });
+      };
+      
+      var refresh2 = function(){
+                 $scope.edit = true;
+         $scope.updateshow = false;
+        $http.get("/previousDONEAdd")
+        .success(function(response){
+        $scope.cards2 = response.doc;
+        $scope.tenantid = response.tenantid;
+                }).error(function(error){
+          alert(error);
+        });
+      };
+
+    var refresh3 = function(){
+                 $scope.edit = true;
+         $scope.updateshow = false;
+        $http.get("/previousNEWAdd")
+        .success(function(response){
+        $scope.cards3 = response.doc;
+        $scope.tenantid = response.tenantid;
+                }).error(function(error){
+          alert(error);
+        });
+      };
+
+      
+
+      $scope.editCard = function(id) {
+        alert("editCard function called");
+        $scope.edit = false;
+        $scope.updateshow = true;
+        $http.get('/editKbCard/' + id).success(function(response){
+          alert(" success response recieved from editKbcard")
+          $scope.cardDB = response;
+          alert($scope.cardDB.cardDescription);
+        });
+      };
+
+      var cardNo;
       
       var maxCard = function(){
-          $http.get("/fetchCardNo")
+          $http.get("/fetchTODOCardNo")
         .success(function(response){
             console.log(response);
-             $scope.cardNo=response;
-            $scope.cardNumber=$scope.cardNo;
-  			  			}).error(function(error){
-  				alert(error);
-  			});
+            cardNo=response;
+            $scope.cardNumber=cardNo;
+            }).error(function(error){
+          alert(error);
+        });
       };
       
+      var maxCard1 = function(){
+          $http.get("/fetchDOINGCardNo")
+        .success(function(response){
+            console.log(response);
+            cardNo1=response;
+            $scope.cardNumber1=cardNo1;
+            }).error(function(error){
+          alert(error);
+        });
+      };
+      
+      var maxCard2 = function(){
+          $http.get("/fetchDONECardNo")
+        .success(function(response){
+            console.log(response);
+            cardNo2=response;
+            $scope.cardNumber2=cardNo2;
+            }).error(function(error){
+          alert(error);
+        });
+      };
      maxCard();
+     maxCard1();
+     maxCard2();
      refresh();
+     refresh1();
+     refresh2();
+     refresh3();
+
+     $scope.update = function() {
+        $http.post('/updateCard/' + $scope.cardDB._id, $scope.cardDB).success(function(response){
+          refresh();
+          refresh1();
+          refresh2();
+          maxCard();
+          maxCard1();
+          maxCard2();
+          refresh3();
+          $scope.cardDB.cardDescription='';
+          $scope.cardDB.cardLane='';
+          $scope.edit = true;
+          $scope.updateshow = false;
+        });
+      };
 
         $scope.postCard = function() {
-            $scope.cardNumber++;
-            
-            if($scope.cardNumber>10){
-                alert("card can not be more than 10");
-            }
-            else {
-            alert($scope.cardNumber);
-            console.log($scope.cardDescription);
-            $http({
-					method: 'POST',
-					url: '/cardDetails',
-				    data:{ 
-				        "projectid": id,
-                        "tenantid": $scope.tenantid,
-							"cardDescription": $scope.cardDescription,
-							"cardNo": $scope.cardNumber
-						}  
-				})
+            var cardValue=cardNo2+cardNo1+cardNo;
+            if (cardValue >= 10) { alert("total number of cards are "+cardValue+" which has exceeded the threshold limit of 10");}
+          $http({
+          method: 'POST',
+          url: '/cardDetails',
+             data:{ 
+                "projectid": id,
+//                        "tenantid": $scope.tenantid,
+                "tenantid": 1234,
+              "cardDescription": $scope.cardDB.cardDescription,
+              "cardLane": $scope.cardDB.lane.selected,
+              "cardNo": $scope.cardNumber
+            }   
+        })
         .success(function(response){
-
-            console.log(response.body);
-            refresh();
-         $('#addCard').modal('hide');
-         $scope.cardDescription = "";
-          }).error(function(error){
-  				alert(error);
-  			}); 
-        }
+              refresh();
+              refresh1();
+              refresh2();
+              maxCard();
+              maxCard1();
+              maxCard2();
+                     }).error(function(error){
+          alert(error);
+        }); 
       };
-      
-            $scope.cancel = function(){ 
+
+                $scope.cancel = function(){ 
           $scope.cardDescription='';
       };
          
           $scope.clearProject = function(){
             $http.get("/getProjectDetails")
             .success(function(response){
-      		  $scope.projectname =response[0].projectname;
+            $scope.projectname =response[0].projectname;
            $scope.startDateProject= new Date(response[0].projectstart);
           if (response[0].projectend == null){
                         $scope.endDateProject=response[0].projectend;
                      }
                      else{
                      $scope.endDateProject= new Date(response[0].projectend);}
-      			}).error(function(error){
-      				alert(error);
-  			});
+            }).error(function(error){
+              alert(error);
+        });
        };
        
        var saveProjectdetail = function(){
@@ -375,7 +591,7 @@
         $http.get("/getProjectDetails")
         .success(function(response){
           if(response.length > 0){
-           if(response[0].projectid == 1){
+           if(response[0].projectid == 3){
                $scope.projectname =response[0].projectname;
             $scope.startDateProject=new Date( response[0].projectstart);
             if (response[0].projectend == null){
@@ -391,9 +607,9 @@
           else{
             saveProjectdetail();
           }
-  			}).error(function(error){
-  				alert(error);
-  			});
+        }).error(function(error){
+          alert(error);
+        });
       };
       
       getProjectDetails(); 
@@ -457,6 +673,7 @@
                   });
         }
       };
+          
       });
   </script>
 

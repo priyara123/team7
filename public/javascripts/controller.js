@@ -15,9 +15,9 @@
 		});
 
 		//calc actualPts
-		$http.get('/actualPoints').success(function(response) {
+		$http.get('/points').success(function(response) {
 			if(response[0]) {
-				//handles the case where there are stories created.
+				//handles the case where there are stories created; actualpoints = completed points.
 				if (response[0].actualPoints)
 					$scope.actualPoints = response[0].actualPoints;
 				//handles the case where no stories created.
@@ -49,7 +49,7 @@
 			else {
 				$scope.expectedPoints = 0;
 				$scope.actualPoints = 0;
-				$scope.completionDate = "Cannot compute completion date. Looks like there are no  stories and sprints created!";
+				$scope.completionDate = "Cannot compute completion date. Looks like there are no stories/sprints created or assigned! Create & assign stories and come back!";
 			}
 		}); 
 	};
