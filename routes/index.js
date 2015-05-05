@@ -53,7 +53,6 @@ router.get('/previousCardAdd', function(req, res) {
 });
 
 router.get('/KanbanColumnList', function(req, res) {
-	var tenantid=1234;
 	console.log("tenantid " + tenantid);
   	var sqlGetTechnology = "select * from TECHNOLOGY where technologyName = 'Kanban' and tenantId = " + "'"+ tenantid + "'"; 
   	console.log(sqlGetTechnology);
@@ -67,8 +66,7 @@ router.get('/KanbanColumnList', function(req, res) {
 });
 
 router.get('/previousTODOAdd', function(req, res) {
-	tenantid=1234;
-	db.task.find({tenantid : parseInt(tenantid), cardLane : "TODO"},function(err, docs){
+		db.task.find({tenantid : parseInt(tenantid), cardLane : "TODO"},function(err, docs){
 		if(err){
 			console.log("error");
 			throw err;
@@ -82,22 +80,21 @@ router.get('/previousTODOAdd', function(req, res) {
 
 
 router.get('/previousNEWAdd', function(req, res) {
-	tenantid=1234;
 	db.task.find({tenantid : parseInt(tenantid), cardLane: { $nin: [ "TODO", "DOING", "DONE"] }},function(err, docs){
 		if(err){
 			console.log("error");
 			throw err;
 		}
 		else{
-			console.log(res.body);
+			console.log("previous new add query output..");
+			console.log(docs);
 			res.send({'doc':docs,'tenantid' : tenantid});
 		}
 	});
 });
 
 router.get('/previousDOINGAdd', function(req, res) {
-	tenantid=1234;
-	db.task.find({tenantid : parseInt(tenantid), cardLane : "DOING"},function(err, docs){
+		db.task.find({tenantid : parseInt(tenantid), cardLane : "DOING"},function(err, docs){
 		if(err){
 			console.log("error");
 			throw err;
@@ -110,7 +107,7 @@ router.get('/previousDOINGAdd', function(req, res) {
 });
 
 router.get('/previousDONEAdd', function(req, res) {
-	tenantid=1234;
+
 	db.task.find({tenantid : parseInt(tenantid), cardLane : "DONE"},function(err, docs){
 		if(err){
 			console.log("error");
@@ -124,8 +121,7 @@ router.get('/previousDONEAdd', function(req, res) {
 });
 
 router.get('/fetchTODOCardNo', function(req, res) {
-	var tenantid=1234;
-	db.task.count({tenantid : parseInt(tenantid), cardLane : "TODO"},function(err, count){
+		db.task.count({tenantid : parseInt(tenantid), cardLane : "TODO"},function(err, count){
 		if(err){
 			console.log("error");
 			throw err;
@@ -139,7 +135,6 @@ router.get('/fetchTODOCardNo', function(req, res) {
 });
 
 router.get('/fetchDOINGCardNo', function(req, res) {
-	var tenantid=1234;
 	db.task.count({tenantid : parseInt(tenantid), cardLane : "DOING"},function(err, count){
 		if(err){
 			console.log("error");
@@ -154,7 +149,6 @@ router.get('/fetchDOINGCardNo', function(req, res) {
 });
 
 router.get('/fetchDONECardNo', function(req, res) {
-	var tenantid=1234;
 	db.task.count({tenantid : parseInt(tenantid), cardLane : "DONE"},function(err, count){
 		if(err){
 			console.log("error");

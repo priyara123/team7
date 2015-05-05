@@ -78,7 +78,7 @@
                       </select>
                     </div>-->
 
-                    <select ng-model="cardDB.lane.selected">
+                    <select ng-model="cardDB.lane.selected" >
                       <option value="TODO">TODO</option>
                       <option value="DOING">DOING</option>
                       <option value="DONE">DONE</option>
@@ -106,8 +106,9 @@
   
     <div class="container-fluid">
         <div id="sortableKanbanBoards" class="row">
+            <ul>
             
-            <div class="panel panel-primary kanban-col">
+            <li><div class="panel panel-primary kanban-col">
                 <div class="panel-heading">
                     TODO
                     <i class="fa fa-2x fa-plus-circle pull-right"></i>
@@ -135,18 +136,18 @@
                          </div>
                          </div>
                        </div>
-                         </div>
+                         </div></li>
             
-                         <div class="panel panel-primary kanban-col"  >
+                         <li><div class="panel panel-primary kanban-col"  ng-show ="columnList.length > 0" >
                 <div class="panel-heading" ng-repeat = "column in columnList">
                     {{column}}
                     <i class="fa fa-2x fa-plus-circle pull-right"></i>
                 </div>
 
-                <div class="panel-body">
+                
+                <div class="panel-body" ng-repeat="card in cards3">
                     <div id="TODO" class="kanban-centered">
 
-                      <div ng-repeat="card in cards3">
                         <article class="kanban-entry grab" id="item11" draggable="true">
                             
                             <div class="kanban-entry-inner">
@@ -164,11 +165,11 @@
 
                          </div>
                          </div>
-                       </div>
-                         </div>
+                       </div></li>
+                    
             
             
-                          <div class="panel panel-primary kanban-col">
+                          <li><div class="panel panel-primary kanban-col">
                     <div class="panel-heading">
                     DOING
                     <i class="fa fa-2x fa-plus-circle pull-right"></i>
@@ -194,10 +195,10 @@
 
                          </div>
                     </div>
-                </div>            </div>
+                </div>            </div></li>
 
                 
-                 <div class="panel panel-primary kanban-col">
+                 <li><div class="panel panel-primary kanban-col">
                     <div class="panel-heading">
                     DONE
                     <i class="fa fa-2x fa-plus-circle pull-right"></i>
@@ -222,7 +223,10 @@
 
                          </div>
                     </div>
-                </div>            </div>
+                </div>            
+                </div></li></ul>
+                </div>
+                </div>
       
         <div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="lstatus" aria-hidden="true">
       <div class="modal-dialog">
@@ -364,7 +368,7 @@
         $scope.projectname = "Untitled";
         $scope.updateshow = false;
         $scope.edit = true;
-        var tenantid=1234;
+        var tenantid;
         var id=3;
         var cardNo;
       
@@ -435,8 +439,12 @@
          $scope.updateshow = false;
         $http.get("/previousNEWAdd")
         .success(function(response){
-        $scope.cards3 = response.doc;
-        $scope.tenantid = response.tenantid;
+            console.log("Kanban response");
+            console.log(response);
+            if(response.doc.length > 0)
+                $scope.cards3 = response.doc;
+            $scope.tenantid = response.tenantid;
+            console.log($scope.tenantid);
                 }).error(function(error){
           alert(error);
         });
@@ -445,14 +453,11 @@
       
 
       $scope.editCard = function(id) {
-        alert("editCard function called");
         $scope.edit = false;
         $scope.updateshow = true;
         $http.get('/editKbCard/' + id).success(function(response){
-          alert(" success response recieved from editKbcard")
-          $scope.cardDB = response;
-          alert($scope.cardDB.cardDescription);
-        });
+           $scope.cardDB = response;
+                  });
       };
 
       var cardNo;
@@ -521,9 +526,8 @@
           url: '/cardDetails',
              data:{ 
                 "projectid": id,
-//                        "tenantid": $scope.tenantid,
-                "tenantid": 1234,
-              "cardDescription": $scope.cardDB.cardDescription,
+                  "tenantid": $scope.tenantid,
+                  "cardDescription": $scope.cardDB.cardDescription,
               "cardLane": $scope.cardDB.lane.selected,
               "cardNo": $scope.cardNumber
             }   
@@ -535,6 +539,7 @@
               maxCard();
               maxCard1();
               maxCard2();
+              refresh3();
                      }).error(function(error){
           alert(error);
         }); 

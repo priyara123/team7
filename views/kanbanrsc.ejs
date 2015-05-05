@@ -140,6 +140,42 @@
         </div>
       </div>
     </div>
+    
+            <div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="lstatus" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="lstatus">Project Status</h4>
+          </div>
+          <div class="modal-body">
+              <div>
+              <label>cards present in TODO Column are :-</label>
+              </div>
+              <div>
+            <label>{{cardNumber}}</label>
+            </div>
+             <div>
+              <label>cards present in DOING Column are :-</label>
+              </div>
+              <div>
+            <label>{{cardNumber1}}</label>
+            </div>
+             <div>
+              <label>cards present in DONE Column are :-</label>
+              </div>
+              <div>
+            <label>{{cardNumber2}}</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="modal fade" id="status" tabindex="-1" role="dialog" aria-labelledby="lstatus" aria-hidden="true">
       <div class="modal-dialog">
@@ -173,6 +209,42 @@
       $scope.updateshow = false;
       var tenantid;
       var id=1;
+      
+      var maxCard = function(){
+          $http.get("/fetchTODOCardNo")
+        .success(function(response){
+            console.log(response);
+            cardNo=response;
+            $scope.cardNumber=cardNo;
+            }).error(function(error){
+          alert(error);
+        });
+      };
+      
+      var maxCard1 = function(){
+          $http.get("/fetchDOINGCardNo")
+        .success(function(response){
+            console.log(response);
+            cardNo1=response;
+            $scope.cardNumber1=cardNo1;
+            }).error(function(error){
+          alert(error);
+        });
+      };
+      
+      var maxCard2 = function(){
+          $http.get("/fetchDONECardNo")
+        .success(function(response){
+            console.log(response);
+            cardNo2=response;
+            $scope.cardNumber2=cardNo2;
+            }).error(function(error){
+          alert(error);
+        });
+      };
+     maxCard();
+     maxCard1();
+     maxCard2();
       
       var refresh = function(){
         $http.get("/getResourceList")
@@ -236,7 +308,7 @@
 
       $scope.cancel = function(){ 
           $scope.resource.name='';
-          $scope.resource.email='';
+          $scope.resourc.email='';
           $scope.edit = true;
           $scope.updateshow = false;
       };
