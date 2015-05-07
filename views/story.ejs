@@ -114,8 +114,9 @@
               		<input type="number" id = "points" min=1 required>
               		<div>
               		  <label>Sprint:&nbsp;<span style="color:red;font-size:11px;"/> (completed sprints are disabled for selection)</label>
-              		  <select data-ng-model = "userStory.sprintId" data-placement = "top" class="selectpicker" data-style="btn-success" required>
+              		  <select data-placement = "top" class="selectpicker" id="addStorySprintPicker" data-style="btn-success" required>
               		    <option data-ng-repeat = "sprint in sprintIdList" ng-disabled = "(sprint.sprintStatus == 2)">{{sprint.sprintId}}</option>
+              		    <option value="" selected></option>
               		  </select>
                 </div>
           		</form>

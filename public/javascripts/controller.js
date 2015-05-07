@@ -116,9 +116,12 @@
     	});
     
     	//append sprintId to the item
-    	newStory.sprintId = $("#storyForm *").filter("select[class='sprintPicker']").val();
+    	//sprIdSelected = $("#storyForm *").filter("select[class='sprintPicker']");
+    	newStory.sprintId = $("#addStorySprintPicker option:selected").text();
     	newStory.points = parseInt($("#storyForm *").filter("input[id='points']").val());
     	newStory.name = $("#storyForm *").filter("input[id='storyName']").val();
+    	console.log("new stry..");
+    	console.log(newStory);
     	
     	$http.post('/userStoryList', newStory).success(function(response) {
 			refresh();
